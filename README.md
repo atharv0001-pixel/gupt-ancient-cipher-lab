@@ -24,4 +24,13 @@ Run `npm test` for the laboratory checks and `npm run build` to create a product
 - [Original Kaṭapayādi Laboratory design](gupt_katapayadi_laboratory_indian_numerical_encoding/)
 - [Original Cipher Breaking Studio design](gupt_cipher_breaking_studio_cryptanalysis_frequency_lab/)
 
-The Vercel project uses `app` as the application folder when deploying from this repository.
+## Where to make changes
+
+| Change | Files |
+| --- | --- |
+| Cipher methods or frequency calculations | [Cipher logic](app/src/lib/ciphers.ts) |
+| Sanskrit parsing or digit mappings | [Kaṭapayādi logic](app/src/lib/katapayadi.ts) |
+| Lab screens and controls | [React pages](app/src/pages/) |
+| Expected results for sample inputs | [Lab tests](app/tests/labs.test.ts) |
+
+If you connect this repository to Vercel, select `app` as the project's root directory.
