@@ -22,6 +22,13 @@ test('reference alphabets and ragged transposition', () => {
   assert.equal(transform('HELLO', 'paired', 'encode'), 'URYYB')
   assert.equal(transform('ABCDEFG', 'columns', 'encode', 0, '', 3), 'ADGBECF')
 })
+test('keyword substitution ignores separators and preserves message case', () => {
+  const keyword = 'Ba-lL ooN!'
+  // The unique key letters B, A, L, O, N occupy the first five positions.
+  assert.equal(transform('AbC De!', 'keyword', 'encode', 0, keyword), 'BaL On!')
+  assert.equal(transform('BaL On!', 'keyword', 'decode', 0, keyword), 'AbC De!')
+})
+
 test('letter evidence excludes punctuation and handles short messages', () => {
   assert.equal(letterStats('A a B!').total, 3)
   assert.equal(letterStats('A a B!').coincidence, 1/3)
