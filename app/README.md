@@ -19,6 +19,12 @@ npm.cmd run dev
 - **Kaṭapayādi Numerical Laboratory** at `/katapayadi-lab` converts Sanskrit Devanagari text using the displayed Kerala convention and explores candidate syllables for a numeric string.
 - **Cipher Breaking Studio** at `/cipher-breaking` provides a ciphertext editor, letter counts, repeated groups, coincidence index, all Caesar readings and a manual substitution board.
 
+## Try the laboratories
+
+1. Open **Cipher Lab**, enter `HELLO` and select a Caesar shift of 3. The result is `KHOOR`. **Reverse operation** recovers the original message.
+2. Choose **Inspect in Breaking Studio** to carry the ciphertext across. Expand **Compare all 26 shifts** and find the row that reads `HELLO`.
+3. Open **Kaṭapayādi** and enter `कवि`. The written digits are `1, 4`. Reading them from right to left gives `41`.
+
 ## Production deployment
 
 The production site is [GUPT on Vercel](https://gupt-ancient-cipher-lab.vercel.app). Edit and test the source in this folder. To publish an update to the same address, run `npx vercel --prod` here while signed in to the atharvghodke workspace. The first deployment was made directly from this folder. A Git repository can be connected later for automatic deployments.
