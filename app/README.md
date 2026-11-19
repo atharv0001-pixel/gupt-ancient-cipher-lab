@@ -1,0 +1,35 @@
+# GUPT · Ancient Indian Cipher Lab
+
+A local React and TypeScript learning site based on three Stitch laboratory designs.
+
+## Open on Windows
+
+Double-click **Open GUPT.cmd** in this folder. It starts the app on this computer and opens a browser. Keep the terminal open while using the site. Close it to stop the server.
+
+For a fresh copy, install Node.js 24 and run the following in this folder.
+
+```powershell
+npm.cmd ci --include=optional
+npm.cmd run dev
+```
+
+## Laboratories
+
+- **Cipher Laboratory** at `/cipher-lab` supports five reversible methods, live alphabet mappings, frequency counts and a notebook for up to twelve experiments. Its notebook is stored in the current browser for the site's address.
+- **Kaṭapayādi Numerical Laboratory** at `/katapayadi-lab` converts Sanskrit Devanagari text using the displayed Kerala convention and explores candidate syllables for a numeric string.
+- **Cipher Breaking Studio** at `/cipher-breaking` provides a ciphertext editor, letter counts, repeated groups, coincidence index, all Caesar readings and a manual substitution board.
+
+## Production deployment
+
+The production site is [GUPT on Vercel](https://gupt-ancient-cipher-lab.vercel.app). Edit and test the source in this folder. To publish an update to the same address, run `npx vercel --prod` here while signed in to the atharvghodke workspace. The first deployment was made directly from this folder. A Git repository can be connected later for automatic deployments.
+
+## Local checks
+
+```powershell
+npm.cmd test
+npm.cmd run lint
+npm.cmd run build
+npm.cmd run preview
+```
+
+The cipher operations are classroom demonstrations. The Kaṭapayādi rules and the historical note link to their sources within the laboratories. The seal and illustrative manuscript image come from the supplied Stitch designs.
