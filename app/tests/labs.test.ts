@@ -47,6 +47,13 @@ test('Kaṭapayādi reference example, clusters, zeroes and mute consonants', ()
   assert.equal(readWord('कa').value, '')
   assert.deepEqual(readWord('कa').unsupported, ['a'])
 })
+test('independent vowels add zero while attached vowel signs retain the consonant digit', () => {
+  assert.deepEqual(readWord('कै').syllables, [{ glyph: 'कै', digit: 1 }])
+  const result = readWord('ऐक')
+  assert.deepEqual(result.written, [0, 1])
+  assert.equal(result.value, '10')
+})
+
 test('every generated candidate sequence round-trips, including leading zeros', () => {
   for (const value of ['41', '0089', '1234567890']) {
     const choices = spellNumber(value)
