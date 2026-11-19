@@ -35,6 +35,11 @@ test('letter evidence excludes punctuation and handles short messages', () => {
   assert.equal(letterStats('क').coincidence, null)
   assert.deepEqual(repeatedGroups('THE THE',3), [['THE',2]])
 })
+test('repeated pairs may overlap within a word and stop at punctuation', () => {
+  assert.deepEqual(repeatedGroups('aaa!AA', 2), [['AA', 3]])
+  assert.deepEqual(repeatedGroups('A-B A-B', 2), [])
+})
+
 test('Kaṭapayādi reference example, clusters, zeroes and mute consonants', () => {
   assert.deepEqual(readWord('कवि').written, [1,4])
   assert.equal(readWord('कवि').value, '41')
