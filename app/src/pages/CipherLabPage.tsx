@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Frequency, PageHeading, Panel, Wheel } from '../components/Lab'
 import { alphabet, methods, substitutionAlphabet, transform, type Direction, type Method } from '../lib/ciphers'
@@ -19,15 +19,17 @@ function loadNotebook(): Experiment[] {
 }
 
 export default function CipherLabPage() {
+  const messageInput = useRef<HTMLTextAreaElement>(null)
   const [experiment, setExperiment] = useState(empty)
   const [notebook, setNotebook] = useState(loadNotebook)
   const [notice, setNotice] = useState('')
+  const [exploredLetter, setExploredLetter] = useState<string | null>(null)
   const { method, direction, shift, keyword, columns, input } = experiment
   const patch = (value: Partial<Experiment>) => { setExperiment(e => ({ ...e, ...value })); setNotice('') }
   const valid = method !== 'keyword' || /[a-z]/i.test(keyword)
   const output = valid ? transform(input, method, direction, shift, keyword, columns) : ''
   const key = substitutionAlphabet(method, shift, keyword)
-  const inputLetter = input.match(/[a-z]/i)?.[0].toUpperCase() ?? 'A'
+  const inputLetter = exploredLetter ?? input.match(/[a-z]/i)?.[0].toUpperCase() ?? 'A'
   const mapped = transform(inputLetter, method, direction, shift, keyword, columns)
   function save() {
     const existing = loadNotebook().filter(e => JSON.stringify(e) !== JSON.stringify(experiment))
@@ -46,14 +48,40 @@ export default function CipherLabPage() {
           {method === 'keyword' && <label className="field">Keyword<input value={keyword} maxLength={60} onChange={e => patch({ keyword: e.target.value })} /></label>}
           {!valid && <p role="alert">Use at least one Latin letter in the keyword.</p>}
         </Panel></div>
-      <div className="stack"><Panel title="Message workbench"><label className="field">Sample<select value={samples.includes(input) ? input : ''} onChange={e => patch({ input: e.target.value, direction:'encode' })}><option value="" disabled>Custom message</option>{samples.map(s => <option key={s}>{s}</option>)}</select></label>
-        <label className="field">{direction === 'encode' ? 'Plaintext' : 'Ciphertext'}<textarea value={input} maxLength={4000} onChange={e => patch({ input: e.target.value })} /></label>
+      <div className="stack"><Panel title="Message workbench"><label className="field">Sample<select value={samples.includes(input) ? input : ''} onChange={e => {
+          const sample = e.target.value
+          patch({ input: sample, direction: sample ? 'encode' : direction })
+          if (!sample) messageInput.current?.focus()
+        }}><option value="">Custom message</option>{samples.map(s => <option key={s}>{s}</option>)}</select></label>
+        <label className="field">{direction === 'encode' ? 'Plaintext' : 'Ciphertext'}<textarea ref={messageInput} value={input} placeholder="Type your message here" maxLength={4000} onChange={e => patch({ input: e.target.value })} /></label>
         <label className="field">Result<output className="readout">{output || '—'}</output></label>
         <div className="actions"><button className="gold-button" disabled={!output} onClick={() => patch({ input: output, direction: direction === 'encode' ? 'decode' : 'encode' })}>Reverse operation ⇄</button>
         <button className="line-button" disabled={!output} onClick={save}>Save experiment</button></div><p className="feedback" role="status">{notice}</p>
       </Panel><Panel title={method === 'columns' ? 'Column readout' : 'Letter mapping'} accent>
         {method === 'columns' ? <p>The message fills {columns} columns across. Encoding reads the columns from top to bottom, including spaces and punctuation.</p> : <>
-          <Wheel source={inputLetter} mapped={mapped}/><div className="mapping-strip">{[...alphabet].map((letter, i) => <span key={letter}><b>{direction === 'encode' ? letter : key[i]}</b>{direction === 'encode' ? key[i] : letter}</span>)}</div></>}
+          <Wheel source={inputLetter} mapped={mapped} onSelect={setExploredLetter}/>
+          {method === 'paired' ? <>
+            <div className="reciprocal-pairs" aria-label="Reciprocal alphabet partners">
+              {[alphabet.slice(0, 13), alphabet.slice(13)].map((row, rowIndex) => <div className="pair-row" key={rowIndex}>
+                {[...row].map(letter => <button key={letter} aria-label={letter + ' pairs with ' + transform(letter, 'paired', 'encode')} aria-pressed={inputLetter === letter} className={inputLetter === letter || mapped === letter ? 'pair-active' : ''} onClick={() => setExploredLetter(letter)}>{letter}</button>)}
+              </div>)}
+            </div>
+            <p className="pair-help">Letters above and below each other are partners. Select either letter to explore the pair.</p>
+          </> : method === 'atbash' ? <>
+            <p>A and Z are partners because they are at opposite ends of the alphabet. Move inward from both ends to find each pair.</p>
+            <table className="atbash-pairs">
+              <caption>Atbash mirror partners</caption>
+              <thead><tr><th scope="col">Letter</th><th scope="col">Swap</th><th scope="col">Partner</th></tr></thead>
+              <tbody>{[...alphabet.slice(0, 13)].map((letter, index) => {
+                const partner = alphabet[25 - index]
+                return <tr key={letter} className={inputLetter === letter || inputLetter === partner ? 'pair-active' : ''}>
+                  <td><button aria-label={'Explore ' + letter} onClick={() => setExploredLetter(letter)}>{letter}</button></td>
+                  <td>↔</td>
+                  <td><button aria-label={'Explore ' + partner} onClick={() => setExploredLetter(partner)}>{partner}</button></td>
+                </tr>
+              })}</tbody>
+            </table>
+          </> : <div className="mapping-strip">{[...alphabet].map((letter, i) => <span key={letter}><b>{direction === 'encode' ? letter : key[i]}</b>{direction === 'encode' ? key[i] : letter}</span>)}</div>}</>}
       </Panel></div>
       <div className="stack"><Frequency text={output} /><Panel title="Historical context"><p>Book I of the Arthaśāstra mentions <em>gūḍhalekhya</em>, or cipher-writing, as a way of relaying information. The alphabet operations here are classroom models for exploring how such secrecy works.</p><a className="source-link" href="https://en.wikisource.org/wiki/Arthashastra/Book_I#CHAPTER_XII." target="_blank" rel="noreferrer">Read Book I, chapter XII ↗</a></Panel>
       <Panel title="Experiment notebook"><p>{notebook.length ? 'Select a saved experiment to restore it.' : 'Save an experiment to revisit its message and key on this device.'}</p>

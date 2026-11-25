@@ -73,11 +73,30 @@ input[type="range"] { width:100%; accent-color:var(--cyan); }
 .actions,.example-list,.segmented { flex-wrap:wrap; gap:7px; }
 .feedback:not(:empty),.hint { margin-top:12px; }
 .wheel-card { display:grid; place-items:center; background:radial-gradient(ellipse,#282720,transparent 72%); padding:3px 0 14px; }
-.wheel { position:relative; width:160px; }
+.wheel { position:relative; width:210px; max-width:100%; touch-action:none; user-select:none; cursor:grab; }
+.wheel:active { cursor:grabbing; }
+.wheel-card > p { text-align:center; margin-bottom:10px; }
+.wheel-pointer { fill:var(--cyan); }
+.wheel-controls { justify-content:center; }
+.wheel-controls output { min-width:85px; text-align:center; font:18px var(--font-mono); color:var(--cyan); }
+.wheel-slider { width:min(100%,260px); }
+.reciprocal-pairs { display:grid; gap:5px; }
+.pair-row { display:grid; grid-template-columns:repeat(13,minmax(0,1fr)); gap:3px; }
+.pair-row button { min-width:0; padding:10px 0; border:1px solid var(--line); border-radius:3px; background:#111417; color:var(--gold); font:14px var(--font-mono); cursor:pointer; }
+.pair-row:last-child button { color:var(--cyan); }
+.pair-row .pair-active { border-color:var(--cyan); background:#203d38; }
+.pair-help { margin-top:12px; }
+.atbash-pairs { width:100%; margin-top:14px; border-collapse:collapse; text-align:center; font:14px var(--font-mono); }
+.atbash-pairs caption { text-align:left; color:var(--cyan); margin-bottom:10px; }
+.atbash-pairs th { padding:8px; color:var(--muted); font-weight:500; }
+.atbash-pairs td { border-top:1px solid var(--line); color:var(--muted); }
+.atbash-pairs button { width:100%; padding:7px; cursor:pointer; color:var(--gold); }
+.atbash-pairs td:last-child button { color:var(--cyan); }
+.atbash-pairs .pair-active { background:#203d38; }
 .wheel svg { width:100%; }
 .wheel circle { stroke:#756246; fill:none; stroke-width:1; }
 .wheel text { font:10px var(--font-mono); fill:var(--gold); }
-.wheel > div { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; gap:6px; font:22px var(--font-mono); color:var(--gold); }
+.wheel > div { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; gap:6px; font:22px var(--font-mono); color:var(--gold); pointer-events:none; }
 .wheel > div span,.wheel strong:last-child { color:var(--cyan); }
 .mapping-strip,.glyphs,.number-controls,.guess-board { display:flex; flex-wrap:wrap; gap:5px; }
 .mapping-strip span,.glyphs > div,.example-list span,.count-list span { background:#111417; border:1px solid #393d3d; text-align:center; border-radius:3px; }
