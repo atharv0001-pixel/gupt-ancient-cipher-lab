@@ -60,7 +60,24 @@ export default function CipherLabPage() {
       </Panel><Panel title={method === 'columns' ? 'Column readout' : 'Letter mapping'} accent>
         {method === 'columns' ? <p>The message fills {columns} columns across. Encoding reads the columns from top to bottom, including spaces and punctuation.</p> : <>
           <Wheel source={inputLetter} mapped={mapped} onSelect={setExploredLetter}/>
-          {method === 'paired' ? <>
+          {method === 'keyword' ? <>
+            {valid ? <>
+              <div className="keyword-table-scroll" tabIndex={0} role="region" aria-label="Keyword alphabet mapping">
+                <table className="keyword-alphabet"><tbody>
+                  <tr><th scope="row">Normal</th>{[...alphabet].map(letter => <td key={letter}>{letter}</td>)}</tr>
+                  <tr><th scope="row">New</th>{[...key].map(letter => <td key={letter}>{letter}</td>)}</tr>
+                </tbody></table>
+              </div>
+              <p>{direction === 'encode' ? 'Replace each letter in the Normal row with the letter directly below it.' : 'Find each letter in the New row and use the letter directly above it.'}</p>
+              <div className="keyword-breakdown">
+                <table className="atbash-pairs">
+                  <caption>Your message, letter by letter</caption>
+                  <thead><tr><th scope="col">Original letter</th><th scope="col">{direction === 'encode' ? 'Letter below it' : 'Letter above it'}</th></tr></thead>
+                  <tbody>{(input.match(/[a-z]/gi) ?? []).map((letter, index) => <tr key={index}><td>{letter}</td><td>{transform(letter, method, direction, shift, keyword)}</td></tr>)}</tbody>
+                </table>
+              </div>
+            </> : <p>Enter a keyword containing at least one English letter to see its alphabet.</p>}
+          </> : method === 'paired' ? <>
             <div className="reciprocal-pairs" aria-label="Reciprocal alphabet partners">
               {[alphabet.slice(0, 13), alphabet.slice(13)].map((row, rowIndex) => <div className="pair-row" key={rowIndex}>
                 {[...row].map(letter => <button key={letter} aria-label={letter + ' pairs with ' + transform(letter, 'paired', 'encode')} aria-pressed={inputLetter === letter} className={inputLetter === letter || mapped === letter ? 'pair-active' : ''} onClick={() => setExploredLetter(letter)}>{letter}</button>)}

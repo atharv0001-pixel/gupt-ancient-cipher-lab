@@ -86,6 +86,13 @@ input[type="range"] { width:100%; accent-color:var(--cyan); }
 .pair-row:last-child button { color:var(--cyan); }
 .pair-row .pair-active { border-color:var(--cyan); background:#203d38; }
 .pair-help { margin-top:12px; }
+.keyword-table-scroll { overflow-x:auto; margin:12px 0; }
+.keyword-alphabet { width:100%; border-collapse:collapse; font:14px var(--font-mono); text-align:center; }
+.keyword-alphabet th { text-align:left; padding:8px; color:var(--muted); }
+.keyword-alphabet td { min-width:23px; padding:8px 3px; color:var(--gold); border:1px solid var(--line); }
+.keyword-alphabet tr:last-child td { color:var(--cyan); }
+.keyword-breakdown { max-height:340px; overflow:auto; }
+.keyword-breakdown td { padding:7px; }
 .atbash-pairs { width:100%; margin-top:14px; border-collapse:collapse; text-align:center; font:14px var(--font-mono); }
 .atbash-pairs caption { text-align:left; color:var(--cyan); margin-bottom:10px; }
 .atbash-pairs th { padding:8px; color:var(--muted); font-weight:500; }
