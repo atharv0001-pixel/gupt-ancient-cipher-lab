@@ -27,7 +27,7 @@ npm.cmd run dev
 
 ## Production deployment
 
-The production site is [GUPT on Vercel](https://gupt-ancient-cipher-lab.vercel.app). Edit and test the source in this folder. To publish an update to the same address, run `npx vercel --prod` here while signed in to the atharvghodke workspace. The first deployment was made directly from this folder. A Git repository can be connected later for automatic deployments.
+The production site is [GUPT on Vercel](https://gupt-ancient-cipher-lab.vercel.app). Edit the source in this folder. Deploy from the repository root using the instructions in [deployment/README.md](../deployment/README.md); the Vercel configuration builds `frontend/` and serves `frontend/dist`.
 
 ## Local checks
 

@@ -1,8 +1,9 @@
 @import "tailwindcss";
+@source not "../design-references";
 
 /*
  * GUPT Design System — CSS Custom Properties
- * Extracted from: ancient_intelligence_digital_future/DESIGN.md
+ * Extracted from: ../design-references/ancient_intelligence_digital_future/DESIGN.md
  * ──────────────────────────────────────────────────
  */
 

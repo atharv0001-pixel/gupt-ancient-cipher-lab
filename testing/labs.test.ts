@@ -1,7 +1,7 @@
 import { strict as assert } from 'node:assert'
 import { test } from 'node:test'
-import { letterStats, methods, repeatedGroups, substitutionAlphabet, transform } from '../src/lib/ciphers.ts'
-import { readWord, spellNumber } from '../src/lib/katapayadi.ts'
+import { letterStats, methods, repeatedGroups, substitutionAlphabet, transform } from '../frontend/src/lib/ciphers.ts'
+import { readWord, spellNumber } from '../frontend/src/lib/katapayadi.ts'
 
 test('Caesar reference example and alphabet wrap', () => {
   assert.equal(transform('HELLO', 'caesar', 'encode', 3), 'KHOOR')

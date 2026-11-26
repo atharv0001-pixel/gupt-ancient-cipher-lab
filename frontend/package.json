@@ -6,9 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "oxlint",
+    "lint": "cd .. && oxlint -c frontend/.oxlintrc.json frontend/src testing frontend/vite.config.ts",
     "preview": "vite preview",
-    "test": "tsx --test tests/labs.test.ts"
+    "test": "tsx --test ../testing/labs.test.ts"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.5",

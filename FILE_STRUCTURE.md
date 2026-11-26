@@ -1,75 +1,52 @@
 # Project file structure
 
-GUPT currently runs its interface and calculations in the browser. There is no separate application backend or database. This guide groups the tracked files by responsibility without changing their locations.
+The repository is organised into five responsibility folders. Backend and database folders currently document future scope; the implemented application runs in the browser.
+
+| Folder | Contents |
+| --- | --- |
+| `frontend/` | React application, browser calculations, styles, assets, and design references |
+| `backend/` | Documentation of future backend scope; no server implemented |
+| `database/` | Current local storage explanation; no database connected |
+| `testing/` | Automated tests and testing instructions |
+| `deployment/` | Deployment helper and hosting instructions |
 
 ## Frontend
 
-Paths in this section are relative to `app/`.
+`frontend/src/pages/` contains `HomePage.tsx`, `CipherLabPage.tsx`, `KatapayadiLabPage.tsx`, `CipherBreakingPage.tsx`, and `NotFoundPage.tsx`.
 
-| Files | Responsibility |
-| --- | --- |
-| `index.html` | HTML entry page |
-| `src/main.tsx` | Starts the React application |
-| `src/App.tsx` | Application routes |
-| `src/layouts/MainLayout.tsx` | Shared page layout |
-| `src/components/Navigation.tsx` | Navigation |
-| `src/components/Lab.tsx` | Shared panels, frequency display, and alphabet wheel |
-| `src/pages/HomePage.tsx` | Overview page |
-| `src/pages/CipherLabPage.tsx` | Cipher controls, custom messages, mapping tables, and experiment notebook |
-| `src/pages/KatapayadiLabPage.tsx` | Kaṭapayādi conversion interface |
-| `src/pages/CipherBreakingPage.tsx` | Cipher analysis, decoding controls, and word-by-word table |
-| `src/pages/NotFoundPage.tsx` | Unknown-route page |
-| `src/App.css`, `src/index.css`, `src/labs.css` | Styles and layouts |
-| `src/lib/ciphers.ts` | Browser-based cipher transformations and text analysis |
-| `src/lib/katapayadi.ts` | Browser-based Kaṭapayādi parsing and consonant choices |
-| `src/assets/hero.png` | Image asset |
-| `src/assets/react.svg`, `src/assets/vite.svg` | Framework logo assets |
-| `public/favicon.svg` | Browser-tab icon |
-| `public/gupt-seal.jpg`, `public/manuscript-study.jpg`, `public/icons.svg` | Public images and icons |
+`frontend/src/components/Lab.tsx` supplies shared panels, the frequency display, and alphabet wheel. `Navigation.tsx` supplies navigation. `frontend/src/layouts/MainLayout.tsx` provides the shared layout. `main.tsx` starts React, while `App.tsx` connects routes. `App.css`, `index.css`, and `labs.css` define styling.
 
-## Backend
+`frontend/src/lib/ciphers.ts` performs transformations and text analysis. `katapayadi.ts` handles supported syllables and number representations. These functions run in the browser and are not backend endpoints.
 
-There are no implemented server endpoints or separate backend server files. The functions in `app/src/lib/` run in the browser. Node.js is used for development, builds, and tests; it is not an application server in the current deployment.
+Source assets include `hero.png`, `react.svg`, and `vite.svg`. Public assets include `favicon.svg`, `gupt-seal.jpg`, `manuscript-study.jpg`, and `icons.svg`.
 
-## Database and storage
+The original four design directories now live under `frontend/design-references/`:
 
-There are no database schemas, migrations, or database connection files. Firebase and Supabase are not connected.
+- `ancient_intelligence_digital_future/`
+- `gupt_ancient_cipher_laboratory_interactive_workbench/`
+- `gupt_cipher_breaking_studio_cryptanalysis_frequency_lab/`
+- `gupt_katapayadi_laboratory_indian_numerical_encoding/`
 
-`app/src/pages/CipherLabPage.tsx` saves and restores up to twelve experiments using browser `localStorage`. Entries remain associated with that browser and website origin; this is not cross-device cloud storage.
+Their design document, HTML, and screenshots are reference material, separate from the running React application.
 
-## Testing and code checks
+`frontend/index.html` is the HTML entry point. `package.json` and `package-lock.json` hold dependencies and scripts. `vite.config.ts`, `tsconfig*.json`, and `.oxlintrc.json` remain alongside the application for normal tool discovery. `Open GUPT.cmd` launches the local site on Windows. `frontend/README.md` explains application usage, and `frontend/.gitignore` excludes generated local files.
 
-| Files | Responsibility |
-| --- | --- |
-| `app/tests/labs.test.ts` | Automated checks for reference examples, round trips, text analysis, and Kaṭapayādi rules |
-| `app/.oxlintrc.json` | Code-quality check configuration |
-| `app/tsconfig.json` | Main TypeScript configuration |
-| `app/tsconfig.app.json` | Application type-checking configuration |
-| `app/tsconfig.node.json` | Tooling type-checking configuration |
+## Backend and database
 
-From `app/`, use `npm test` for automated tests, `npm run lint` for code checks, and `npm run build` for type checking and a production build.
+No backend server, authentication service, database connection, or migration is implemented. The experiment notebook in `frontend/src/pages/CipherLabPage.tsx` stores up to twelve experiments in browser `localStorage`.
 
-## Deployment and development setup
+`backend/README.md` and `database/README.md` explain these boundaries and where future work belongs.
 
-| Files | Responsibility |
-| --- | --- |
-| `app/vercel.json` | Vercel settings and page-routing rewrites |
-| `app/vite.config.ts` | Development and build configuration |
-| `app/package.json` | Dependencies and development, build, test, lint, and preview commands |
-| `app/package-lock.json` | Dependency lockfile |
-| `app/Open GUPT.cmd` | Windows launcher script |
-| `.gitignore`, `app/.gitignore` | Git exclusions |
+## Testing
 
-## Documentation and design references
+Tests live in `testing/labs.test.ts` and import the actual functions from `frontend/src/lib/`. Run `npm test` at the repository root. `testing/README.md` documents automated and browser checks.
 
-| Files | Responsibility |
-| --- | --- |
-| `README.md` | Project introduction and website link |
-| `FILE_STRUCTURE.md` | This file classification guide |
-| `app/README.md` | Application documentation |
-| `ancient_intelligence_digital_future/DESIGN.md` | Design documentation |
-| `gupt_ancient_cipher_laboratory_interactive_workbench/code.html`, `gupt_ancient_cipher_laboratory_interactive_workbench/screen.png` | Cipher Lab design reference |
-| `gupt_cipher_breaking_studio_cryptanalysis_frequency_lab/code.html`, `gupt_cipher_breaking_studio_cryptanalysis_frequency_lab/screen.png` | Breaking Studio design reference |
-| `gupt_katapayadi_laboratory_indian_numerical_encoding/code.html`, `gupt_katapayadi_laboratory_indian_numerical_encoding/screen.png` | Kaṭapayādi Lab design reference |
+## Deployment
 
-The reference HTML and screenshots are separate from the running React application.
+Deployment instructions and the Windows release helper live in `deployment/README.md` and `deployment/deploy.ps1`. Vercel uses the repository root and discovers `vercel.json` there. It installs dependencies in `frontend/`, builds that package, and publishes `frontend/dist`.
+
+## Root files and generated files
+
+The root `package.json` provides shortcuts that delegate to the frontend package. `vercel.json` stays at the root for hosting discovery. `README.md` introduces the project, `FILE_STRUCTURE.md` explains its layout, and `.gitignore` excludes local files.
+
+The frontend dependency lockfile remains beside its package manifest. Ignored generated files such as `node_modules/`, `dist/`, and `.vercel/` are not committed.

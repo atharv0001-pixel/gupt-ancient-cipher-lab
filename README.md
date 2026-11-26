@@ -6,3 +6,24 @@ GUPT is an Indian Knowledge Systems learning project with three interactive labo
 
 See the [project file structure](FILE_STRUCTURE.md) for frontend, backend, storage, testing, deployment, and documentation responsibilities.
 
+| Folder | Contents |
+| --- | --- |
+| [frontend](frontend/) | React website, browser calculations, images, styles, and original design references |
+| [backend](backend/) | Backend status and future server-side scope; no server implemented yet |
+| [database](database/) | Current browser storage explanation; no database connected yet |
+| [testing](testing/) | Automated tests and verification instructions |
+| [deployment](deployment/) | Vercel deployment script and instructions |
+
+## Run locally
+
+Install Node.js 24, then run these commands from the repository root:
+
+```powershell
+npm.cmd run setup
+npm.cmd run dev
+```
+
+Check the project with `npm.cmd test`, `npm.cmd run lint`, and `npm.cmd run build`.
+
+The root `package.json` provides shortcuts to the frontend package. The root `vercel.json` is the hosting entry point; deployment details are documented in `deployment/`.
+
