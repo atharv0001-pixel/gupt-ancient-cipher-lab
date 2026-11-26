@@ -20,6 +20,9 @@ export default function CipherBreakingPage() {
   const { total, frequencies, coincidence } = letterStats(text)
   const frequent = [...frequencies].sort((a,b) => b.count - a.count)[0]
   const reconstruction = text.replace(/[A-Za-z]/g, c => guesses[c.toUpperCase()] ?? '·')
+  const reading = tab === 'shift' ? transform(text, 'caesar', 'decode', selected) : reconstruction
+  const codedWords = text.match(/\S+/g) ?? []
+  const decodedWords = reading.match(/\S+/g) ?? []
   function update(value: string) { setText(value); setGuesses({}); setHint(false) }
   return <div className="content-width">
     <PageHeading title="Cipher Breaking Studio">Use counts, repeated groups and competing readings to examine a classroom ciphertext.</PageHeading>
@@ -31,11 +34,20 @@ export default function CipherBreakingPage() {
       <div className="stack"><Frequency text={text} /><Panel title="Reading workbench" accent>
         <div className="segmented"><button aria-pressed={tab === 'shift'} onClick={() => setTab('shift')}>Caesar shifts</button><button aria-pressed={tab === 'map'} onClick={() => setTab('map')}>Substitution guesses</button></div>
         {tab === 'shift' ? <><label className="field">Decoding shift · {selected}<input type="range" min="0" max="25" value={selected} onChange={e => setSelected(Number(e.target.value))} /></label>
-          <output className="readout">{transform(text,'caesar','decode',selected) || '—'}</output>
+          <output className="readout">{reading || '—'}</output>
           <details><summary>Compare all 26 shifts</summary><ol className="candidates" start={0}>{[...alphabet].map((_,i) => <li key={i}><button aria-pressed={i === selected} onClick={() => setSelected(i)}><b>{String(i).padStart(2,'0')}</b> {transform(text,'caesar','decode',i) || '—'}</button></li>)}</ol></details></> :
           <><p>Assign a plaintext letter to each ciphertext letter. Dots mark unsolved letters.</p>
           <div className="guess-board">{frequencies.filter(f => f.count).map(f => <label key={f.letter}>{f.letter}<select aria-label={'Guess for '+f.letter} value={guesses[f.letter] ?? ''} onChange={e => setGuesses(previous => ({...previous,[f.letter]:e.target.value}))}><option value="">·</option>{[...alphabet].map(l => <option key={l} disabled={Object.entries(guesses).some(([from,to]) => from !== f.letter && to === l)}>{l}</option>)}</select></label>)}</div>
-          <output className="readout">{reconstruction || '—'}</output><button className="line-button" onClick={() => setGuesses({})}>Clear guesses</button></>}
+          <output className="readout">{reading || '—'}</output><button className="line-button" onClick={() => setGuesses({})}>Clear guesses</button></>}
+      </Panel>
+      <Panel title="Word-by-word decoding" accent>
+        {codedWords.length ? <div className="word-decoding-scroll" role="region" aria-label="Word-by-word decoding table" tabIndex={0}>
+          <table className="word-decoding-table">
+            <caption>{tab === 'shift' ? `Reading with Caesar shift ${selected}` : 'Reading with your substitution guesses. Dots mark unsolved letters.'}</caption>
+            <thead><tr><th scope="col">Coded word</th><th scope="col">{tab === 'shift' ? 'Decoded word' : 'Current guess'}</th></tr></thead>
+            <tbody>{codedWords.map((word, index) => <tr key={index}><td>{word}</td><td>{decodedWords[index]}</td></tr>)}</tbody>
+          </table>
+        </div> : <p>Enter a coded message above to see each word and its reading.</p>}
       </Panel></div>
       <div className="stack"><Panel title="Analyst’s notebook"><h3>Where to start</h3><ol className="steps"><li>Find a letter or group that repeats.</li><li>Try a shift or assign one letter at a time.</li><li>Check whether the reading makes sense across the whole message.</li></ol>
         <button className="line-button" disabled={!total} onClick={() => setHint(!hint)}>{hint ? 'Hide hint' : 'Reveal a hint'}</button>{hint && <p className="hint" role="status">{frequent.letter} appears {frequent.count} time(s). Try a common plaintext letter such as E or T, then check the resulting words.</p>}</Panel>

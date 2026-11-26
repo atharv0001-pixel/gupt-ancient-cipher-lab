@@ -102,6 +102,12 @@ input[type="range"] { width:100%; accent-color:var(--cyan); }
 .keyword-alphabet tr:last-child td { color:var(--cyan); }
 .keyword-breakdown { max-height:340px; overflow:auto; }
 .keyword-breakdown td { padding:7px; }
+.word-decoding-scroll { max-height:400px; overflow:auto; }
+.word-decoding-table { width:100%; table-layout:fixed; border-collapse:separate; border-spacing:0; text-align:left; font:14px/1.6 var(--font-mono); }
+.word-decoding-table caption { text-align:left; color:var(--muted); padding-bottom:12px; font:13px/1.5 var(--font-body,sans-serif); }
+.word-decoding-table th { position:sticky; top:0; background:var(--panel); color:var(--gold); font-weight:500; }
+.word-decoding-table th,.word-decoding-table td { padding:10px; border-bottom:1px solid var(--line); overflow-wrap:anywhere; vertical-align:top; }
+.word-decoding-table td:last-child { color:var(--cyan); }
 .atbash-pairs { width:100%; margin-top:14px; border-collapse:collapse; text-align:center; font:14px var(--font-mono); }
 .atbash-pairs caption { text-align:left; color:var(--cyan); margin-bottom:10px; }
 .atbash-pairs th { padding:8px; color:var(--muted); font-weight:500; }
