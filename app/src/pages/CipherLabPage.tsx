@@ -7,6 +7,7 @@ const samples = ['HELLO', 'KNOWLEDGE TRAVELS WITH THE MESSENGER', 'MEET BY THE R
 type Experiment = { method: Method; direction: Direction; shift: number; keyword: string; columns: number; input: string }
 const empty: Experiment = { method: 'caesar', direction: 'encode', shift: 3, keyword: 'LOTUS', columns: 4, input: samples[0] }
 const storageKey = 'gupt.cipher.notebook.v1'
+const whitespaceLabels: Record<string, string> = { ' ': 'Space', '\n': 'New line', '\t': 'Tab', '\r': 'Carriage return' }
 
 function loadNotebook(): Experiment[] {
   try {
@@ -28,6 +29,7 @@ export default function CipherLabPage() {
   const patch = (value: Partial<Experiment>) => { setExperiment(e => ({ ...e, ...value })); setNotice('') }
   const valid = method !== 'keyword' || /[a-z]/i.test(keyword)
   const output = valid ? transform(input, method, direction, shift, keyword, columns) : ''
+  const gridCharacters = [...(direction === 'encode' ? input : output)]
   const key = substitutionAlphabet(method, shift, keyword)
   const inputLetter = exploredLetter ?? input.match(/[a-z]/i)?.[0].toUpperCase() ?? 'A'
   const mapped = transform(inputLetter, method, direction, shift, keyword, columns)
@@ -58,7 +60,26 @@ export default function CipherLabPage() {
         <div className="actions"><button className="gold-button" disabled={!output} onClick={() => patch({ input: output, direction: direction === 'encode' ? 'decode' : 'encode' })}>Reverse operation ⇄</button>
         <button className="line-button" disabled={!output} onClick={save}>Save experiment</button></div><p className="feedback" role="status">{notice}</p>
       </Panel><Panel title={method === 'columns' ? 'Column readout' : 'Letter mapping'} accent>
-        {method === 'columns' ? <p>The message fills {columns} columns across. Encoding reads the columns from top to bottom, including spaces and punctuation.</p> : <>
+        {method === 'columns' ? <>
+          <p>{direction === 'encode'
+            ? `Write the message from left to right. After ${columns} characters, start a new row. Read down each column, from column 1 onward, to get the result.`
+            : 'Place the coded message down each column, from column 1 onward. Read the reconstructed rows from left to right to recover the message.'}</p>
+          {gridCharacters.length > 0 ? <div className="column-grid-scroll" role="region" aria-label="Column transposition grid" tabIndex={0}>
+            <table className="column-grid">
+              <caption>{direction === 'encode' ? 'Your message arranged in rows' : 'Your decoded message reconstructed in rows'}</caption>
+              <thead><tr>{Array.from({ length: columns }, (_, column) => <th key={column} scope="col">Column {column + 1}</th>)}</tr></thead>
+              <tbody>{Array.from({ length: Math.ceil(gridCharacters.length / columns) }, (_, row) => <tr key={row}>
+                {Array.from({ length: columns }, (_, column) => {
+                  const character = gridCharacters[row * columns + column]
+                  return <td key={column} className={character === undefined ? 'unused-cell' : ''}>
+                    {character === undefined ? <span className="empty-cell-label">Empty</span> : whitespaceLabels[character] ? <span className="whitespace-cell">{whitespaceLabels[character]}</span> : character}
+                  </td>
+                })}
+              </tr>)}</tbody>
+            </table>
+          </div> : <p className="pair-help">Type a message above to fill the grid.</p>}
+          <p className="pair-help">Spaces, punctuation and line breaks each occupy a cell. Empty cells at the end are skipped.</p>
+        </> : <>
           <Wheel source={inputLetter} mapped={mapped} onSelect={setExploredLetter}/>
           {method === 'keyword' ? <>
             {valid ? <>
