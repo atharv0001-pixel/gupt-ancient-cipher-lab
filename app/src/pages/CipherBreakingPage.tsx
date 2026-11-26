@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { Frequency, PageHeading, Panel } from '../components/Lab'
 import { alphabet, letterStats, repeatedGroups, transform } from '../lib/ciphers'
@@ -17,6 +17,7 @@ export default function CipherBreakingPage() {
   const [tab, setTab] = useState<'shift'|'map'>('shift')
   const [guesses, setGuesses] = useState<Guesses>({})
   const [hint, setHint] = useState(false)
+  const ciphertextInput = useRef<HTMLTextAreaElement>(null)
   const { total, frequencies, coincidence } = letterStats(text)
   const frequent = [...frequencies].sort((a,b) => b.count - a.count)[0]
   const reconstruction = text.replace(/[A-Za-z]/g, c => guesses[c.toUpperCase()] ?? '·')
@@ -27,8 +28,12 @@ export default function CipherBreakingPage() {
   return <div className="content-width">
     <PageHeading title="Cipher Breaking Studio">Use counts, repeated groups and competing readings to examine a classroom ciphertext.</PageHeading>
     <div className="work-grid studio-grid">
-      <div className="stack"><Panel title="Intercept stream"><label className="field">Practice sample<select value={samples.find(s => s.text === text)?.title ?? ''} onChange={e => {const match=samples.find(s => s.title === e.target.value); if(match) update(match.text)}}><option value="" disabled>Custom ciphertext</option>{samples.map(s => <option key={s.title}>{s.title}</option>)}</select></label>
-        <label className="field">Ciphertext<textarea value={text} maxLength={4000} onChange={e => update(e.target.value)} /></label><p>{total} Latin letters available for analysis.</p></Panel>
+      <div className="stack"><Panel title="Intercept stream"><label className="field">Practice sample<select value={samples.find(s => s.text === text)?.title ?? ''} onChange={e => {
+        const match = samples.find(s => s.title === e.target.value)
+        update(match?.text ?? '')
+        if (!match) ciphertextInput.current?.focus()
+      }}><option value="">Custom ciphertext</option>{samples.map(s => <option key={s.title}>{s.title}</option>)}</select></label>
+        <label className="field">Ciphertext<textarea ref={ciphertextInput} value={text} maxLength={4000} placeholder="Type or paste your coded message here…" onChange={e => update(e.target.value)} /></label><p>{total} Latin letters available for analysis.</p></Panel>
         <Panel title="Pattern evidence"><div className="result-line"><span>Coincidence index</span><b>{coincidence?.toFixed(3) ?? '—'}</b></div><p>The chance that two letters drawn without replacement match. Small samples can swing widely.</p>
         {[2,3].map(size => <div key={size}><h3>{size === 2 ? 'Repeated pairs' : 'Repeated triples'}</h3><div className="example-list">{repeatedGroups(text,size).length ? repeatedGroups(text,size).map(([s,n]) => <span key={s}>{s} × {n}</span>) : <small>None found.</small>}</div></div>)}</Panel></div>
       <div className="stack"><Frequency text={text} /><Panel title="Reading workbench" accent>
